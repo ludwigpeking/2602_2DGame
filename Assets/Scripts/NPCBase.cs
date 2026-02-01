@@ -15,9 +15,7 @@ public class NPCBase : MonoBehaviour
     private Vector3 originalScale;
     private bool isWiggling = false;
 
-    // STATIC DATA: This survives the scene change
-    public static Dictionary<string, string> finalScores = new Dictionary<string, string>();
-
+   
     public static Dictionary<string, Dictionary<string, int>> finalScores = new Dictionary<string, Dictionary<string, int>>();
 
     public static void SaveAllScores()
