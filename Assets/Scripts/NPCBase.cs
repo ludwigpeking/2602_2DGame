@@ -18,15 +18,18 @@ public class NPCBase : MonoBehaviour
     // STATIC DATA: This survives the scene change
     public static Dictionary<string, string> finalScores = new Dictionary<string, string>();
 
-    // Call this right before SceneManager.LoadScene
+    public static Dictionary<string, Dictionary<string, int>> finalScores = new Dictionary<string, Dictionary<string, int>>();
+
     public static void SaveAllScores()
     {
         finalScores.Clear();
         NPCBase[] allNPCs = FindObjectsOfType<NPCBase>();
         foreach (NPCBase npc in allNPCs)
         {
-            string scoreData = $"Love: {npc.loveScore} | Hate: {npc.hateScore}";
-            finalScores.Add(npc.npcName, scoreData);
+            var scores = new Dictionary<string, int>();
+            scores.Add("Love", npc.loveScore);
+            scores.Add("Hate", npc.hateScore);
+            finalScores.Add(npc.npcName, scores);
         }
     }
 
