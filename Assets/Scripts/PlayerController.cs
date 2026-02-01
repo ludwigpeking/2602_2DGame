@@ -24,6 +24,12 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer myRenderer;
     private Vector2 moveInput;
 
+    void Awake()
+    {
+        // Clears the score list every time a new game starts
+        NPCBase.finalScores.Clear();
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -65,6 +71,7 @@ public class PlayerController : MonoBehaviour
         if (interactionCount >= maxInteractions)
         {
             Debug.Log("Reached 8 interactions! Moving to EndGame.");
+            NPCBase.SaveAllScores(); // SAVE HERE
             SceneManager.LoadScene("EndGame");
         }
     }

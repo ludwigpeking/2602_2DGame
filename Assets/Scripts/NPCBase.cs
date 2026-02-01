@@ -1,13 +1,34 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic; // <--- ADD THIS LINE
+using UnityEngine.SceneManagement;
 
 public class NPCBase : MonoBehaviour
 {
     [Header("Common Identity")]
     public string npcName;
+    
+    // Moved to base so the check can see it for all NPCs
+    public int hateScore = 0; 
+    public int loveScore = 0;
 
     private Vector3 originalScale;
     private bool isWiggling = false;
+
+    // STATIC DATA: This survives the scene change
+    public static Dictionary<string, string> finalScores = new Dictionary<string, string>();
+
+    // Call this right before SceneManager.LoadScene
+    public static void SaveAllScores()
+    {
+        finalScores.Clear();
+        NPCBase[] allNPCs = FindObjectsOfType<NPCBase>();
+        foreach (NPCBase npc in allNPCs)
+        {
+            string scoreData = $"Love: {npc.loveScore} | Hate: {npc.hateScore}";
+            finalScores.Add(npc.npcName, scoreData);
+        }
+    }
 
     protected virtual void Start()
     {
@@ -18,22 +39,28 @@ public class NPCBase : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            // NEW: The "Hate Gate"
+            // If hate is 2 or more, we exit the function immediately
+            if (hateScore >= 2)
+            {
+                Debug.Log($"{npcName} is too angry to talk to you.");
+                return; 
+            }
+
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             if (player != null)
             {
                 player.RegisterInteraction();
                 if (!isWiggling) StartCoroutine(EnlargeEffect());
 
-                // Call the unique logic
                 OnPlayerInteract(player);
             }
         }
     }
 
-    // This is the "Empty Shell" that children will fill
     protected virtual void OnPlayerInteract(PlayerController player) 
     { 
-        Debug.Log($"{npcName} interacted, but has no unique logic.");
+        // Logic filled by child scripts
     }
 
     IEnumerator EnlargeEffect()
