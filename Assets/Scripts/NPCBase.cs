@@ -7,16 +7,15 @@ public class NPCBase : MonoBehaviour
 {
     [Header("Common Identity")]
     public string npcName;
-    
-    // Moved to base so the check can see it for all NPCs
     public int hateScore = 0; 
     public int loveScore = 0;
+    public string currentRoom = "Unknown"; // Stores current room name
 
     private Vector3 originalScale;
     private bool isWiggling = false;
 
    
-    public static Dictionary<string, Dictionary<string, int>> finalScores = new Dictionary<string, Dictionary<string, int>>();
+    public static Dictionary<string, Dictionary<string, object>> finalScores = new Dictionary<string, Dictionary<string, object>>();
 
     public static void SaveAllScores()
     {
@@ -24,10 +23,12 @@ public class NPCBase : MonoBehaviour
         NPCBase[] allNPCs = FindObjectsOfType<NPCBase>();
         foreach (NPCBase npc in allNPCs)
         {
-            var scores = new Dictionary<string, int>();
-            scores.Add("Love", npc.loveScore);
-            scores.Add("Hate", npc.hateScore);
-            finalScores.Add(npc.npcName, scores);
+            var data = new Dictionary<string, object>();
+            data.Add("Love", npc.loveScore);
+            data.Add("Hate", npc.hateScore);
+            data.Add("Location", npc.currentRoom); // Save the location!
+            
+            finalScores.Add(npc.npcName, data);
         }
     }
 
